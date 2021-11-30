@@ -76,7 +76,7 @@ glm::vec3 Sphere::Shade(Light _light, glm::vec3 _intersection, glm::vec3 _camPos
 			Facing = 0;
 		}
 
-		glm::vec3 Spec = Color * _light.getCol() * Facing * glm::pow((glm::max(glm::dot(Normal, Halfway), 0.0f)), 20); //specular part
+		glm::vec3 Spec = Color * _light.getCol() * Facing * float(glm::pow((glm::max(glm::dot(Normal, Halfway), 0.0f)), 20)); //specular part
 		glm::vec3 Diff = Color * _light.getCol() * (glm::max(glm::dot(Normal, PttoLight), 0.0f));//diffuse part
 
 		reColor = Spec + Diff; //add them to get the return color
