@@ -22,17 +22,19 @@ glm::ivec2 windowSize(640, 480);
 
 std::vector<Sphere> sVec;//vector of spheres
 
-Camera *Cam;
-Tracer *Trace;
-Light *L;
+Camera *Cam;//the camera, creates rays
+Tracer *Trace;//checks for intersections
+Light *L;//point light source
 
 void Animate(Sphere *_sph, Axis _axis);//moves the spheres around an axis
-void Menu();
-void RayTracerSphereAnimation();
-void RayTracerCameraAnimation();
-void drawCircle();
-void drawSquare();
-void drawTriangle();
+void Menu();//main menu
+
+void RayTracerSphereAnimation();//fixed camera, rotating spheres
+void RayTracerCameraAnimation();//fixed spheres, rotating camera
+void drawCircle();//draws a circle pixel by pixel using trig
+void drawSquare();//draws a square pixel by pixel using nested loops
+void drawTriangle();//draws a triangle pixel by pixel using nested loops
+void Animated2D();//draws all 3 2D shapes and animates them
 
 
 #endif
