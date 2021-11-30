@@ -1,0 +1,27 @@
+﻿  Camera.cpp
+  Main.cpp
+h:\ray tracer\mcg_gfx_framework\main.cpp(156): warning C4018: '<': signed/unsigned mismatch
+h:\ray tracer\mcg_gfx_framework\main.cpp(224): warning C4018: '<': signed/unsigned mismatch
+h:\ray tracer\mcg_gfx_framework\main.cpp(291): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+h:\ray tracer\mcg_gfx_framework\main.cpp(292): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+h:\ray tracer\mcg_gfx_framework\main.cpp(293): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+h:\ray tracer\mcg_gfx_framework\main.cpp(298): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+h:\ray tracer\mcg_gfx_framework\main.cpp(299): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+  Generating Code...
+  MCG_GFX_Framework.vcxproj -> H:\Ray Tracer\MCG_GFX_Framework\Debug\MCG_GFX_Framework.exe

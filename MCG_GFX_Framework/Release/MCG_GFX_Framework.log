@@ -1,0 +1,43 @@
+﻿  Camera.cpp
+  GameObject.cpp
+  Light.cpp
+  Main.cpp
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(156,20): warning C4018:  '<': signed/unsigned mismatch
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(224,20): warning C4018:  '<': signed/unsigned mismatch
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(291,11): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(292,17): warning C4244:  '=': conversion from 'double' to 'T', possible loss of data
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(292,17): warning C4244:         with
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(292,17): warning C4244:         [
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(292,17): warning C4244:             T=int
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(292,17): warning C4244:         ]
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(293,17): warning C4244:  '=': conversion from 'double' to 'T', possible loss of data
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(293,17): warning C4244:         with
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(293,17): warning C4244:         [
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(293,17): warning C4244:             T=int
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(293,17): warning C4244:         ]
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(298,16): warning C4244:  '=': conversion from 'double' to 'T', possible loss of data
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(298,16): warning C4244:         with
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(298,16): warning C4244:         [
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(298,16): warning C4244:             T=int
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(298,16): warning C4244:         ]
+  MCG_GFX_Lib.cpp
+  Ray.cpp
+  Sphere.cpp
+  Tracer.cpp
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(299,16): warning C4244:  '=': conversion from 'double' to 'T', possible loss of data
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(299,16): warning C4244:         with
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(299,16): warning C4244:         [
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(299,16): warning C4244:             T=int
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Main.cpp(299,16): warning C4244:         ]
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Tracer.cpp(19,20): warning C4018:  '<': signed/unsigned mismatch
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Tracer.cpp(58,21): warning C4018:  '<': signed/unsigned mismatch
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Tracer.cpp(93,23): warning C4018:  '<': signed/unsigned mismatch
+  Generating code
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Tracer.cpp(253): warning C4715: 'Tracer::mapColor': not all control paths return a value
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Sphere.cpp(91): warning C4715: 'Sphere::Shade': not all control paths return a value
+H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Tracer.cpp(139): warning C4715: 'Tracer::rayTrace': not all control paths return a value
+  262 of 268 functions (97.8%) were compiled, the rest were copied from previous compilation.
+    4 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  MCG_GFX_Framework.vcxproj -> H:\GCP\Multithreaded-Raytracer\MCG_GFX_Framework\Release\MCG_GFX_Framework.exe

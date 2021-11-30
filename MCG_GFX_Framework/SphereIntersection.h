@@ -5,15 +5,15 @@
 
 #include "MCG_GFX_Lib.h"
 
-struct SphereIntersection//is returned by the tracer's intersection check function
+struct SphereIntersection
 {
-	bool Hit = false; //is true if there is an intersection
+	bool Hit = false;
 
-	double Distance = 0.0;//distance between ray origin and intersection pt
+	double Distance = 0.0;
 
-	glm::vec3 Intersection1;//first intersection
+	glm::vec3 Intersection1;
 
-	glm::vec3 Intersection2;//2nd intersection pt.. if there is any
+	glm::vec3 Intersection2;
 
 };
 

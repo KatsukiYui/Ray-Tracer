@@ -8,31 +8,26 @@
 #include "Ray.h"
 #include "Light.h"
 
-enum surfaceType { Rough, Smooth, Reflective}; //used for different types of shading
-//Rough -> diffuse shading 
-//Smooth -> diffuse + specular shading
-//Reflective -> spawning reflection rays, making the object mirror like
+enum surfaceType { Rough, Smooth, Reflective};
 
-class GameObject//base class for objects/Shapes... Currently only spheres are derived from it
+class GameObject
 {
 protected:
 
-	glm::vec3 Color; //color of the object
+	glm::vec3 Color;
 
-	surfaceType surfType;// the surface type of the object
+	surfaceType surfType;
 
 public:
-	GameObject();//empty default constructor
+	GameObject();
 
-	GameObject(glm::vec3 _c, surfaceType _sType);//constructor
+	GameObject(glm::vec3 _c, surfaceType _sType);
 
-	virtual glm::vec3 Shade(Light _light, glm::vec3 _intersection, glm::vec3 _camPos) = 0; //function is to be overriden in the derived classes
+	virtual glm::vec3 Shade(Light _light, glm::vec3 _intersection, glm::vec3 _camPos) = 0;
 
-	//setters
 	void setColor(glm::vec3 _color);
 	void setSurfType(surfaceType _sType);
 
-	//getters
 	glm::vec3 getColor();
 	surfaceType getSurfType();
 
