@@ -3,8 +3,8 @@
 #define __MCG_MAIN__
 
 // The GLM library contains vector and matrix functions and classes for us to use
-#include <GLM/glm.hpp> // This is the main GLM header
-#include <GLM/gtc/matrix_transform.hpp> // This one lets us use matrix transformations
+#include <glm.hpp> // This is the main GLM header
+#include <gtc/matrix_transform.hpp> // This one lets us use matrix transformations
 
 
 /// The MCG namespace provides all the functions to draw a pixel to the screen.

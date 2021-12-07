@@ -1,5 +1,5 @@
 // This is the main SDL include file
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 // iostream is so we can output error messages to console
 #include <iostream>
 
