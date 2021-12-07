@@ -7,6 +7,7 @@
 #include <gtc/matrix_transform.hpp> // This one lets us use matrix transformations
 
 
+
 /// The MCG namespace provides all the functions to draw a pixel to the screen.
 /// You should not be modifying this code for your assignment, you must use it as-is.
 namespace MCG
