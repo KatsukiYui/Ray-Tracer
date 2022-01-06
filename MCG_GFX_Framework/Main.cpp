@@ -1,4 +1,5 @@
 #include "Main.h"
+#include <thread>
 
 int main( int argc, char *argv[] )
 {
@@ -105,6 +106,13 @@ void Menu()
 	}
 };
 
+void calculateColour(glm::ivec2 position, glm::vec3 &backgroundColor, std::vector<std::vector<glm::ivec3>> &pixelColours)
+{
+	glm::vec3 colour = Trace->rayTrace(Cam->createRay(position, windowSize), &sVec, Cam->getPosition(), L, backgroundColor);
+	//std::cout << "position:: " << position.x << "-" << position.y << "      Colour:: " << colour.x << "-" << colour.y << "-" << colour.z << std::endl;
+	pixelColours[position.y][position.x] = colour;
+	//if (colour != backgroundColor) { std::cout << " yAAAAAAAAAAAAAAAAAAAAAAAAAAy"; };
+};
 
 //ray tracer with sphere rotations and fixed camera
 void RayTracerSphereAnimation()
@@ -139,12 +147,28 @@ void RayTracerSphereAnimation()
 
 	//set the backgroundColor
 	glm::vec3 backgroundColor(72, 61, 139);
-
+	MCG::SetBackground(backgroundColor);
 
 	//mapping the spheres' color to 0-1
 	for (int i = 0; i < sVec.size(); i++)
 	{
 		sVec[i].setColor(Trace->mapColor(sVec[i].getColor(), 1));
+	}
+
+	std::vector<std::thread> myThreads;
+	std::vector<std::vector<glm::ivec3>> pixelColours;
+
+	//initializing with empty values
+	for (int j = 0; j < windowSize.y; j++)
+	{
+		std::vector<glm::ivec3> temp;
+
+		for (int i = 0; i < windowSize.x; i++)
+		{
+			temp.push_back(glm::ivec3(0, 0, 0));
+		}
+
+		pixelColours.push_back(temp);
 	}
 
 	while (MCG::ProcessFrame())//draw frame, return false if Esc was pressed
@@ -161,11 +185,33 @@ void RayTracerSphereAnimation()
 
 			for (int i = 0; i < windowSize.x; i++)
 			{
-				MCG::DrawPixel(glm::ivec2(i, j), Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, Cam->getPosition(), L, backgroundColor));
+
+				//myThreads.push_back(std::thread(calculateColour, glm::ivec2(i, j), backgroundColor, pixelColours));
+				
+				calculateColour(glm::ivec2(i, j), backgroundColor, pixelColours);
+				///MCG::DrawPixel(glm::ivec2(i, j), Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, Cam->getPosition(), L, backgroundColor));
 				//create a ray using the camera ptr and pass that ray to the tracer for intersection checks with the spheres vector.
 				//The tracer then returns the color of that pixel.
 			}
 
+		}
+		/*
+		for (std::thread& t : myThreads)
+		{
+			if (t.joinable())
+			{
+				t.join();
+			}
+		}
+		*/
+
+		for (int j = 0; j < windowSize.y; j++)
+		{
+
+			for (int i = 0; i < windowSize.x; i++)
+			{
+				MCG::DrawPixel(glm::ivec2(i, j), pixelColours[j][i]);
+			}
 		}
 	}
 
@@ -173,8 +219,11 @@ void RayTracerSphereAnimation()
 	delete Cam;
 	delete Trace;
 	delete L;
+
 	//clearing the sphere vector
 	sVec.clear();
+	myThreads.clear();
+	pixelColours.clear();
 }
 
 //ray tracer with camera rotations and fixed spheres
