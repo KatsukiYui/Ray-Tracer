@@ -114,7 +114,6 @@ void calculateColour(glm::ivec2 &_startPos, glm::ivec2 &_endpos, glm::vec3 &_bac
 		{
 			glm::vec3 colour = Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, Cam->getPosition(), L, _backgroundColor);
 			_pixelColours[i][j] = colour;
-			//if (_pixelColours[i][j] == glm::vec3(0, 0, 0)){ std::cout << "WTF"; };
 		}
 	}
 };
@@ -194,32 +193,11 @@ void RayTracerSphereAnimation()
 		{
 			//calculate the last pixel the thread will work on based on the raysPerThread value
 			endPosition = glm::ivec2(windowSize.x, endPosition.y + (raysPerThread / windowSize.x));
-			//myThreads.push_back(std::thread(calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
-			calculateColour(startPosition, endPosition, backgroundColor, pixelColours);
+			myThreads.push_back(std::thread(&calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
+			//calculateColour(startPosition, endPosition, backgroundColor, pixelColours);
 			startPosition = glm::ivec2(0, endPosition.y);
 		}
 
-		/*
-		for (int j = 0; j < windowSize.y; j++)
-		{
-
-			for (int i = 0; i < windowSize.x; i++)
-			{
-			 
-				//myThreads.push_back(std::thread(calculateColour, glm::ivec2(i, j), backgroundColor, pixelColours));
-				///This makes a thread per pixel lets cap it to 8 threads
-
-		// THIS DIVIDES NICELY FOR NOW BUT ADD A REMAINDER THREAD FOR OTHER WINDOW SIZES
-		int raysPerThread = (windowSize.x * windowSize.y) / 8;
-				
-				//->calculateColour(glm::ivec2(i, j), backgroundColor, pixelColours);
-				///MCG::DrawPixel(glm::ivec2(i, j), Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, Cam->getPosition(), L, backgroundColor));
-				//create a ray using the camera ptr and pass that ray to the tracer for intersection checks with the spheres vector.
-				//The tracer then returns the color of that pixel.
-			}
-
-		}
-		*/
 
 		for (std::thread& t : myThreads)
 		{
@@ -229,20 +207,6 @@ void RayTracerSphereAnimation()
 			}
 		}
 
-		/*
-		for (int j = 0; j < windowSize.y; j++)
-		{
-
-			for (int i = 0; i < windowSize.x; i++)
-			{
-			
-				if (pixelColours[i][j] == glm::vec3(0, 0, 0)) 
-				{ 
-					std::cout << "WTF"; 
-				};
-			}
-		}
-	*/
 
 		for (int j = 0; j < windowSize.y; j++)
 		{
