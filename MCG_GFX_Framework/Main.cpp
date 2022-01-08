@@ -106,12 +106,17 @@ void Menu()
 	}
 };
 
-void calculateColour(glm::ivec2 position, glm::vec3 &backgroundColor, std::vector<std::vector<glm::ivec3>> &pixelColours)
+void calculateColour(glm::ivec2 &_startPos, glm::ivec2 &_endpos, glm::vec3 &_backgroundColor, std::vector<std::vector<glm::vec3>>&_pixelColours)
 {
-	glm::vec3 colour = Trace->rayTrace(Cam->createRay(position, windowSize), &sVec, Cam->getPosition(), L, backgroundColor);
-	//std::cout << "position:: " << position.x << "-" << position.y << "      Colour:: " << colour.x << "-" << colour.y << "-" << colour.z << std::endl;
-	pixelColours[position.y][position.x] = colour;
-	//if (colour != backgroundColor) { std::cout << " yAAAAAAAAAAAAAAAAAAAAAAAAAAy"; };
+	for (int j = _startPos.y; j < _endpos.y; j++)
+	{
+		for (int i = _startPos.x; i < _endpos.x; i++)
+		{
+			glm::vec3 colour = Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, Cam->getPosition(), L, _backgroundColor);
+			_pixelColours[i][j] = colour;
+			//if (_pixelColours[i][j] == glm::vec3(0, 0, 0)){ std::cout << "WTF"; };
+		}
+	}
 };
 
 //ray tracer with sphere rotations and fixed camera
@@ -155,17 +160,17 @@ void RayTracerSphereAnimation()
 		sVec[i].setColor(Trace->mapColor(sVec[i].getColor(), 1));
 	}
 
-	std::vector<std::thread> myThreads;
-	std::vector<std::vector<glm::ivec3>> pixelColours;
+	std::vector<std::thread> myThreads(8);
+	std::vector<std::vector<glm::vec3>> pixelColours;
 
 	//initializing with empty values
-	for (int j = 0; j < windowSize.y; j++)
+	for (int j = 0; j < windowSize.x; j++)
 	{
-		std::vector<glm::ivec3> temp;
+		std::vector<glm::vec3> temp;
 
-		for (int i = 0; i < windowSize.x; i++)
+		for (int i = 0; i < windowSize.y; i++)
 		{
-			temp.push_back(glm::ivec3(0, 0, 0));
+			temp.push_back(glm::vec3(0, 0, 0));
 		}
 
 		pixelColours.push_back(temp);
@@ -180,22 +185,42 @@ void RayTracerSphereAnimation()
 
 		MCG::getWindowSize(&windowSize);//used to enable changing the window size
 
+		// THIS DIVIDES NICELY FOR NOW BUT ADD A REMAINDER THREAD FOR OTHER WINDOW SIZES
+		int raysPerThread = (windowSize.x * windowSize.y) / 8; //38,400
+		glm::ivec2 startPosition(0, 0);
+		glm::ivec2 endPosition(0, 0);
+
+		for (int i = 0; i < 8; i++)
+		{
+			//calculate the last pixel the thread will work on based on the raysPerThread value
+			endPosition = glm::ivec2(windowSize.x, endPosition.y + (raysPerThread / windowSize.x));
+			//myThreads.push_back(std::thread(calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
+			calculateColour(startPosition, endPosition, backgroundColor, pixelColours);
+			startPosition = glm::ivec2(0, endPosition.y);
+		}
+
+		/*
 		for (int j = 0; j < windowSize.y; j++)
 		{
 
 			for (int i = 0; i < windowSize.x; i++)
 			{
-
+			 
 				//myThreads.push_back(std::thread(calculateColour, glm::ivec2(i, j), backgroundColor, pixelColours));
+				///This makes a thread per pixel lets cap it to 8 threads
+
+		// THIS DIVIDES NICELY FOR NOW BUT ADD A REMAINDER THREAD FOR OTHER WINDOW SIZES
+		int raysPerThread = (windowSize.x * windowSize.y) / 8;
 				
-				calculateColour(glm::ivec2(i, j), backgroundColor, pixelColours);
+				//->calculateColour(glm::ivec2(i, j), backgroundColor, pixelColours);
 				///MCG::DrawPixel(glm::ivec2(i, j), Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, Cam->getPosition(), L, backgroundColor));
 				//create a ray using the camera ptr and pass that ray to the tracer for intersection checks with the spheres vector.
 				//The tracer then returns the color of that pixel.
 			}
 
 		}
-		/*
+		*/
+
 		for (std::thread& t : myThreads)
 		{
 			if (t.joinable())
@@ -203,14 +228,28 @@ void RayTracerSphereAnimation()
 				t.join();
 			}
 		}
-		*/
+
+		/*
+		for (int j = 0; j < windowSize.y; j++)
+		{
+
+			for (int i = 0; i < windowSize.x; i++)
+			{
+			
+				if (pixelColours[i][j] == glm::vec3(0, 0, 0)) 
+				{ 
+					std::cout << "WTF"; 
+				};
+			}
+		}
+	*/
 
 		for (int j = 0; j < windowSize.y; j++)
 		{
 
 			for (int i = 0; i < windowSize.x; i++)
 			{
-				MCG::DrawPixel(glm::ivec2(i, j), pixelColours[j][i]);
+				MCG::DrawPixel(glm::ivec2(i, j), pixelColours[i][j]);
 			}
 		}
 	}
