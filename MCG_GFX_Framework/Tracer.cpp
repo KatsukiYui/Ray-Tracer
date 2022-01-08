@@ -11,7 +11,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPo
 {
 	double shortestDis = 500000.0;//just a huge number by default
 
-	glm::vec3 rayIntersection; //used for intersection checks
+	glm::vec3 rayIntersection{ 0.0f, 0.0f, 0.0f }; //used for intersection checks
 
 	int index = -1;//index of current sphere with the shortest distance (from ray origin to the 1st intersection pt)
 
@@ -29,6 +29,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPo
 		if (sIntersect.Hit)
 		{
 			rayHit = true;
+			sIntersect.Hit = false;
 
 			if (sIntersect.Distance < shortestDis) //finds the shortest distance
 			{
@@ -69,6 +70,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPo
 			if (sIntersect.Hit == true)
 			{
 				shadowHit = true;
+				sIntersect.Hit = false;
 			}
 		}
 
@@ -91,9 +93,9 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPo
 
 				int refIndex = 0;//used to index the object that the reflection ray hits, that also ahs the shortest distance from ray origin
 
-				glm::vec3 refIntersect;//used to do ray sphere intersection checks
+				glm::vec3 refIntersect{ 0.0f, 0.0f, 0.0f };//used to do ray sphere intersection checks
 
-				float refShortestDis = 5000;//used to dermine the shortest distance so only the closest object is reflected
+				float refShortestDis = 500000.0;//used to dermine the shortest distance so only the closest object is reflected
 
 				//reflection ray intersection checks
 				for (int p = 0; p < _sVec->size(); p++)
@@ -103,7 +105,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPo
 					if (sIntersect.Hit == true)
 					{
 						reflectionHit = true; //there was an intersection
-
+						sIntersect.Hit = false;
 
 
 						if (sIntersect.Distance < shortestDis) //finds the shortest distance

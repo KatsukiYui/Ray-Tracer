@@ -11,9 +11,9 @@ struct SphereIntersection//is returned by the tracer's intersection check functi
 
 	double Distance = 0.0;//distance between ray origin and intersection pt
 
-	glm::vec3 Intersection1;//first intersection
+	glm::vec3 Intersection1{ 0.0f, 0.0f, 0.0f };//first intersection
 
-	glm::vec3 Intersection2;//2nd intersection pt.. if there is any
+	glm::vec3 Intersection2{ 0.0f, 0.0f, 0.0f };//2nd intersection pt.. if there is any
 
 };
 
