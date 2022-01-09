@@ -142,6 +142,13 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPo
 
 	}
 
+}
+glm::vec3 Tracer::antiAliasing(Ray _ray1, Ray _ray2, std::vector<Sphere>* _sVec, glm::vec3 _camPos, Light* _light, glm::vec3 backgroundColor)
+{
+	glm::vec3 firstColour = rayTrace(_ray1, _sVec, _camPos, _light, backgroundColor);
+	glm::vec3 secondColour = rayTrace(_ray2, _sVec, _camPos, _light, backgroundColor);
+
+	return (firstColour + secondColour) * 0.5f;
 };
 
 

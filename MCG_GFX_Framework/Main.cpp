@@ -112,7 +112,7 @@ void calculateColour(glm::ivec2 &_startPos, glm::ivec2 &_endpos, glm::vec3 &_bac
 	{
 		for (int i = _startPos.x; i < _endpos.x; i++)
 		{
-			glm::vec3 colour = Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, Cam->getPosition(), L, _backgroundColor);
+			glm::vec3 colour = Trace->antiAliasing(Cam->createRay(glm::vec2(i, j), windowSize), Cam->createRay(glm::vec2(i + 0.5, j + 0.5), windowSize), &sVec, Cam->getPosition(), L, _backgroundColor);
 			_pixelColours[i][j] = colour;
 		}
 	}
@@ -193,8 +193,8 @@ void RayTracerSphereAnimation()
 		{
 			//calculate the last pixel the thread will work on based on the raysPerThread value
 			endPosition = glm::ivec2(windowSize.x, endPosition.y + (raysPerThread / windowSize.x));
-			myThreads.push_back(std::thread(&calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
-			//calculateColour(startPosition, endPosition, backgroundColor, pixelColours);
+			//myThreads.push_back(std::thread(&calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
+			calculateColour(startPosition, endPosition, backgroundColor, pixelColours);
 			startPosition = glm::ivec2(0, endPosition.y);
 		}
 

@@ -27,9 +27,9 @@ public:
 
 	Camera(glm::vec3 _pos, glm::vec3 _lookAtDir);//constructor
 
-	Ray createRay(glm::ivec2 _coord, glm::ivec2 _window);//creates a ray
+	Ray createRay(glm::vec2 _coord, glm::ivec2 _window);//creates a ray
 
-	glm::vec2 NDC(glm::ivec2 _coord, glm::ivec2 _window);//maps pixel coordinates to -1 to 1
+	glm::vec2 NDC(glm::vec2 _coord, glm::ivec2 _window);//maps pixel coordinates to -1 to 1
 
 	glm::mat4 makeViewing(glm::vec3 _up);//creates the inverse of the viewing matrix
 	//using the camera position, the look at direction and the up vector(0,1,0)

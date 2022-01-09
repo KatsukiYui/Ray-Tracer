@@ -12,9 +12,8 @@ Camera::Camera(glm::vec3 _pos, glm::vec3  _lookAtDir)//constructor
 
 };
 
-
 //creates a ray that is passed to the tracer function
-Ray Camera::createRay(glm::ivec2 _coord, glm::ivec2 _window)
+Ray Camera::createRay(glm::vec2 _coord, glm::ivec2 _window)
 {
 	glm::vec3 Up(0, 1, 0);// y = 1 used to make the viewing matrix
 
@@ -61,9 +60,10 @@ Ray Camera::createRay(glm::ivec2 _coord, glm::ivec2 _window)
 };
 
 //maps pixel coordinates to -1 to 1
-glm::vec2 Camera::NDC(glm::ivec2 _coord, glm::ivec2 _window)
+glm::vec2 Camera::NDC(glm::vec2 _coord, glm::ivec2 _window)
 {
-	glm::vec2 NDC((_coord.x + 0.5) / _window.x, (_coord.y + 0.5) / _window.y);// +0.5 to get the centre of the pixel
+	//0.25 because half a pixel
+	glm::vec2 NDC((_coord.x + 0.25) / _window.x, (_coord.y + 0.25) / _window.y);// +0.5 to get the centre of the pixel
 
 	NDC = glm::vec2((2*NDC.x) -1 , (2* NDC.y)-1);
 
