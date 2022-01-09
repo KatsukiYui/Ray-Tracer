@@ -1,7 +1,7 @@
 #include "Main.h"
 #include <thread>
 
-#define THREAD_COUNT 8
+#define THREAD_COUNT 24
 
 
 int main( int argc, char *argv[] )
@@ -109,14 +109,14 @@ void Menu()
 	}
 };
 
-void calculateColour(glm::ivec2 &_startPos, glm::ivec2 &_endpos, glm::vec3 &_backgroundColor, std::vector<std::vector<glm::vec3>>&_pixelColours)
+void calculateColour(glm::ivec2 &_startPos, glm::ivec2 &_endpos, glm::vec3 &_backgroundColor, std::shared_ptr<std::vector<std::vector<glm::vec3>>>_pixelColours)
 {
 	for (int j = _startPos.y; j < _endpos.y; j++)
 	{
 		for (int i = _startPos.x; i < _endpos.x; i++)
 		{
 			glm::vec3 colour = Trace->antiAliasing(Cam->createRay(glm::vec2(i, j), windowSize), Cam->createRay(glm::vec2(i + 0.5f, j + 0.5f), windowSize), &sVec, Cam->getPosition(), L, _backgroundColor);
-			_pixelColours[i][j] = colour;
+			_pixelColours->at(i)[j] = colour;
 		}
 	}
 };
@@ -161,8 +161,11 @@ void RayTracerSphereAnimation()
 	{
 		sVec[i].setColor(Trace->mapColor(sVec[i].getColor(), 1));
 	}
-	
-	/*ializing with empty values
+
+	std::vector<std::thread> myThreads;
+	std::shared_ptr<std::vector<std::vector<glm::vec3>>> pixelColours = std::make_shared<std::vector<std::vector<glm::vec3>>>();
+
+	//initializing with empty values
 	for (int j = 0; j < windowSize.x; j++)
 	{
 		std::vector<glm::vec3> temp;
@@ -172,46 +175,10 @@ void RayTracerSphereAnimation()
 			temp.push_back(glm::vec3(255, 0, 0));
 		}
 
-		pixelColours.push_back(temp);
-	}
-	*/
-
-
-
-	std::vector<glm::ivec2> coordList;
-	for (int x = 0; x < windowSize.x; x++)
-	{
-		for (int y = 0; y < windowSize.y; y++)
-		{
-			coordList.push_back(glm::ivec2(x, y));
-		}
-	}
-
-	std::vector<std::vector<glm::ivec2>> threadCoordinates;
-	int coordinateIndex = 0;
-	for (int i = 0; i < THREAD_COUNT - 1; i++)
-	{
-		std::vector<glm::ivec2> subCoordinateList;
-		for (int j = 0; j < (coordList.size() / THREAD_COUNT); j++)
-		{
-			subCoordinateList.push_back(coordList[coordinateIndex]);
-			coordinateIndex++;
-		}
-
-		threadCoordinates.push_back(subCoordinateList);
+		pixelColours->push_back(temp);
 	}
 
 
-
-
-	std::vector<glm::ivec2> subCoordinateList;
-	for (int i = 0; i < (coordList.size() / THREAD_COUNT + coordList.size() % THREAD_COUNT); i++)
-	{
-		subCoordinateList.push_back(coordList[coordinateIndex]);
-		coordinateIndex++;
-	}
-
-	threadCoordinates.push_back(subCoordinateList);
 	while (MCG::ProcessFrame())//draw frame, return false if Esc was pressed
 	{
 		//rotate the spheres
@@ -222,38 +189,23 @@ void RayTracerSphereAnimation()
 		MCG::getWindowSize(&windowSize);//used to enable changing the window size
 
 		// THIS DIVIDES NICELY FOR NOW BUT ADD A REMAINDER THREAD FOR OTHER WINDOW SIZES
-		int raysPerThread = (windowSize.x * windowSize.y) / 8; //38,400
+		int raysPerThread = (windowSize.x * windowSize.y) / THREAD_COUNT; //38,400
 		glm::ivec2 startPosition(0, 0);
 		glm::ivec2 endPosition(0, 0);
 
-		/*
-		for (int i = 0; i < 8; i++)
-		{
-			//calculate the last pixel the thread will work on based on the raysPerThread value
-			endPosition = glm::ivec2(windowSize.x, endPosition.y + (raysPerThread / windowSize.x));
-			//myThreads.push_back(std::thread(&calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
-			calculateColour(startPosition, endPosition, backgroundColor, pixelColours);
-			startPosition = glm::ivec2(0, endPosition.y);
-		}
-		*/
-
-
-
-		std::vector<std::thread> myThreads;
-		std::vector<std::shared_ptr<std::vector<glm::vec3>>> outputColours;
 		
 		for (int i = 0; i < THREAD_COUNT - 1; i++)
 		{
-			outputColours.push_back(std::make_shared<std::vector<glm::vec3>>());
-			myThreads.push_back(std::thread(RayTracerThread, threadCoordinates[i], outputColours[i]));
+			//calculate the last pixel the thread will work on based on the raysPerThread value
+			endPosition = glm::ivec2(windowSize.x, endPosition.y + (raysPerThread / windowSize.x));
+			myThreads.push_back(std::thread(calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
+			//calculateColour(startPosition, endPosition, backgroundColor, pixelColours);
+			startPosition = glm::ivec2(0, endPosition.y);
 		}
-
-		outputColours.push_back(std::make_shared<std::vector<glm::vec3>>());
-		myThreads.push_back(std::thread(RayTracerThread, threadCoordinates[THREAD_COUNT - 1], outputColours[THREAD_COUNT - 1]));
 		
-			   	
-
-
+		//incase it's not divisable by 8 add all remaining to last thread
+		endPosition = windowSize;
+		myThreads.push_back(std::thread(calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
 
 		for (std::thread& thread : myThreads)
 		{
@@ -264,39 +216,14 @@ void RayTracerSphereAnimation()
 		}
 
 
-
-
-		for (int i = 0; i < outputColours.size(); i++)
-		{
-			for (int j = 0; j < outputColours[i]->size(); j++)
-			{
-				MCG::DrawPixel(threadCoordinates[i][j], outputColours[i]->at(j));
-			}
-		}
-
-		/*
 		for (int j = 0; j < windowSize.y; j++)
 		{
 
 			for (int i = 0; i < windowSize.x; i++)
 			{
-				MCG::DrawPixel(threadCoordinates[], pixelColours[i][j]);
-			}
-		}*/
-
-
-
-
-		/*
-		for (int j = 0; j < windowSize.y; j++)
-		{
-
-			for (int i = 0; i < windowSize.x; i++)
-			{
-				MCG::DrawPixel(glm::ivec2(i, j), pixelColours[i][j]);
+				MCG::DrawPixel(glm::ivec2(i, j), pixelColours->at(i)[j]);
 			}
 		}
-		*/
 	}
 
 	//deleting pointers, freeing memory
@@ -306,27 +233,9 @@ void RayTracerSphereAnimation()
 
 	//clearing the sphere vector
 	sVec.clear();
-	/*
 	myThreads.clear();
-	pixelColours.clear();
-	*/
+	pixelColours->clear();
 }
-
-void RayTracerThread(std::vector<glm::ivec2> pixelCoordinates, std::shared_ptr<std::vector<glm::vec3>> outputColours)
-{
-	for (int i = 0; i < pixelCoordinates.size(); i++)
-	{
-		int x = pixelCoordinates[i].x, y = pixelCoordinates[i].y;
-		glm::vec3 colour = Trace->antiAliasing(Cam->createRay(pixelCoordinates[i], windowSize), Cam->createRay(glm::vec2(x + 0.5f, y + 0.5f), windowSize), &sVec, Cam->getPosition(), L, glm::vec3(72, 61, 139));
-		
-		outputColours->push_back(colour);
-	}
-}
-
-
-
-
-
 
 //ray tracer with camera rotations and fixed spheres
 void RayTracerCameraAnimation()
