@@ -14,9 +14,6 @@
 
 class Tracer
 {
-protected:
-
-	SphereIntersection sIntersect; //used for intersection checks between the spheres and a ray
 
 public:
 

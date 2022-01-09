@@ -9,6 +9,9 @@
 */
 glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPos, Light *_light, glm::vec3 backgroundColor)
 {
+
+	SphereIntersection sIntersect; //used for intersection checks between the spheres and a ray
+
 	double shortestDis = 500000.0;//just a huge number by default
 
 	glm::vec3 rayIntersection{ 0.0f, 0.0f, 0.0f }; //used for intersection checks
