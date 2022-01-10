@@ -10,7 +10,7 @@
 glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPos, Light *_light, glm::vec3 backgroundColor)
 {
 
-	SphereIntersection sIntersect; //used for intersection checks between the spheres and a ray
+	Intersection sIntersect; //used for intersection checks between the spheres and a ray
 
 	double shortestDis = 500000.0;//just a huge number by default
 
@@ -165,9 +165,9 @@ glm::vec3 Tracer::closestPtOnLine(Ray _ray, glm::vec3 _pt)
 };
 
 //checks for intersection between ray and sphere
-SphereIntersection Tracer::sphereIntersect(Ray _ray, Sphere _sphere)
+Intersection Tracer::sphereIntersect(Ray _ray, Sphere _sphere)
 {
-	SphereIntersection sphInt; //structure to be returned
+	Intersection sphInt; //structure to be returned
 
 	sphInt.Hit = false; //no intersection by default
 

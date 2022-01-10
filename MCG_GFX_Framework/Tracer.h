@@ -9,7 +9,7 @@
 
 #include "Sphere.h"
 #include "Ray.h"
-#include "SphereIntersection.h"
+#include "Intersection.h"
 #include "Light.h"
 
 class Tracer
@@ -30,7 +30,7 @@ public:
 
 	glm::vec3 closestPtOnLine(Ray _ray, glm::vec3 _pt); //returns the closest pt on a ray from _pt
 
-	SphereIntersection sphereIntersect(Ray _ray, Sphere _sphere); //checks for intersection between ray and sphere
+	Intersection sphereIntersect(Ray _ray, Sphere _sphere); //checks for intersection between ray and sphere
 
 	glm::vec3 mapColor(glm::vec3 _col, int _map); //map the color from 0-255 to 0-1 and back
 

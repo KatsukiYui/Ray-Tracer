@@ -159,9 +159,11 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MCG_GFX_Lib.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Tracer.cpp" />
+    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -169,10 +171,12 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MCG_GFX_Lib.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Sphere.h" />
-    <ClInclude Include="SphereIntersection.h" />
+    <ClInclude Include="Intersection.h" />
     <ClInclude Include="Tracer.h" />
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

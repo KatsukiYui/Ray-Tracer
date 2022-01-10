@@ -39,6 +39,12 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MCG_GFX_Lib.h">
@@ -62,10 +68,16 @@
     <ClInclude Include="Sphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SphereIntersection.h">
+    <ClInclude Include="Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Light.h">
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Intersection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -36,7 +36,6 @@ void drawSquare();//draws a square pixel by pixel using nested loops
 void drawTriangle();//draws a triangle pixel by pixel using nested loops
 void Animated2D();//draws all 3 2D shapes and animates them
 void calculateColour(glm::ivec2& _startPos, glm::ivec2& _endpos, glm::vec3& _backgroundColor, std::shared_ptr<std::vector<std::vector<glm::vec3>>> _pixelColours);
-void RayTracerThread(std::vector<glm::ivec2> pixelCoordinates, std::shared_ptr<std::vector<glm::vec3>> outputColours);
 
 
 #endif

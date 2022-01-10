@@ -1,11 +1,11 @@
-#ifndef _SINT_
-#define _SINT_
+#ifndef _INTERSECT_
+#define _INTERSECT_
 
 #include <cmath>
 
 #include "MCG_GFX_Lib.h"
 
-struct SphereIntersection//is returned by the tracer's intersection check function
+struct Intersection//is returned by the tracer's intersection check function
 {
 	bool Hit = false; //is true if there is an intersection
 
@@ -18,4 +18,4 @@ struct SphereIntersection//is returned by the tracer's intersection check functi
 };
 
 
-#endif // !_SINT_
+#endif // !_INTERSECT_
