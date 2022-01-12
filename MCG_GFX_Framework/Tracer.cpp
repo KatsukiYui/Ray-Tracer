@@ -16,6 +16,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, std::vector<Mesh
 	double shortestDis = 500000.0;//just a huge number by default
 
 	glm::vec3 rayIntersection{ 0.0f, 0.0f, 0.0f }; //used for intersection checks
+	glm::vec3 normal{ 0.0f, 0.0f, 0.0f }; //used for intersection checks
 
 	int index = -1;//index of current sphere with the shortest distance (from ray origin to the 1st intersection pt)
 
@@ -42,6 +43,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, std::vector<Mesh
 				shortestDis = sIntersect.Distance;
 				index = v;//saves its index within the vector and the 1st intersection pt
 				rayIntersection = sIntersect.Intersection1;
+				normal = sIntersect.Normal;
 				closestObjIsMesh = false;
 
 			}
@@ -63,6 +65,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, std::vector<Mesh
 				shortestDis = mIntersect.Distance;
 				index = v;//saves its index within the vector and the 1st intersection pt
 				rayIntersection = mIntersect.Intersection1;
+				normal = mIntersect.Normal;
 				closestObjIsMesh = true;
 
 			}
@@ -78,8 +81,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, std::vector<Mesh
 	{
 		if (closestObjIsMesh)
 		{
-			//return mapColor(_mVec->at(index).Shade(*_light, rayIntersection, _camPos), 2);
-			return glm::vec3(255, 255, 255);
+			return mapColor(_mVec->at(index).Shade(*_light, rayIntersection, normal, _camPos), 2);
 		}
 		else
 		{
@@ -160,7 +162,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, std::vector<Mesh
 					if (reflectionHit == true) //there is an object to reflect .. call that object's shading function and return the color
 					{
 
-						return 0.8F * mapColor(_sVec->at(refIndex).Shade(*_light, refIntersect, _camPos), 2); //dimming the color a bit
+						return 0.8F * mapColor(_sVec->at(refIndex).Shade(*_light, refIntersect, Normal, _camPos), 2); //dimming the color a bit
 
 
 					}
@@ -172,7 +174,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, std::vector<Mesh
 				}
 				//it is not a reflective surface and the shadow ray didnt collide with another object
 				//call this object's shading function and return its color at that pt
-				return mapColor(_sVec->at(index).Shade(*_light, rayIntersection, _camPos), 2);
+				return mapColor(_sVec->at(index).Shade(*_light, rayIntersection, Normal, _camPos), 2);
 			}
 
 		}
@@ -252,6 +254,9 @@ Intersection Tracer::sphereIntersect(Ray _ray, Sphere _sphere)
 				sphInt.Distance = glm::length(sphInt.Intersection1 - _ray.getOrg());
 				//distance from ray origin to the intersection pt
 
+				sphInt.Normal = sphInt.Intersection1 - _sphere.getCentre();
+				sphInt.Normal = glm::normalize(sphInt.Normal);
+
 			}
 
 			else if (Distance < _sphere.getRadius())
@@ -311,7 +316,16 @@ Intersection Tracer::meshIntersect(Ray _ray, Mesh _mesh)
 		glm::vec3 v0 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getPositions()[0]);
 		glm::vec3 v1 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getPositions()[1]);
 		glm::vec3 v2 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getPositions()[2]);
+
+		glm::vec3 n0 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getNormals()[0]);
+		glm::vec3 n1 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getNormals()[1]);
+		glm::vec3 n2 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getNormals()[2]);
+
+		glm::vec3 normal = (n0 + n1 + n2) / 3.0f;
 		
+		//glm::vec3 normal = glm::cross((v1 - v0), (v2 - v0));
+		normal = glm::normalize(normal);
+
 		glm::vec2 b(0);
 		float d;
 		if (glm::intersectRayTriangle(rayOrg, rayDir, v0, v2, v1, b, d))
@@ -319,17 +333,18 @@ Intersection Tracer::meshIntersect(Ray _ray, Mesh _mesh)
 			if (d < shortestDistance)
 			{
 				triangleInt.Distance = d;
+				shortestDistance = d;
 				triangleInt.Intersection1 = rayOrg + rayDir * d;
 				triangleInt.Hit = true;
+				triangleInt.Normal = normal;
 			}
 		}
 
 		/*
 		
 
-		//glm::vec3 normal = glm::cross((v1 - v0), (v2 - v0));
-		glm::vec3 normal = (n0 + n1 + n2) / 3.0f;
-		normal = glm::normalize(normal);
+
+
 
 		float normalDotDir = glm::dot(normal, rayDir);
 		// check if the ray and the plane are parallel

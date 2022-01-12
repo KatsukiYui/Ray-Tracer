@@ -19,7 +19,7 @@
 enum Axis {x, y, z};//for rotations
 
 // Variable for storing window dimensions
-glm::ivec2 windowSize(640, 480);
+glm::ivec2 windowSize(320, 240);
 
 std::vector<Sphere> sVec;//vector of spheres
 std::vector<Mesh> mVec;//vector of meshes

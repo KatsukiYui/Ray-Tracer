@@ -26,7 +26,7 @@ public:
 
 	GameObject(glm::vec3 _c, surfaceType _sType);//constructor
 
-	virtual glm::vec3 Shade(Light _light, glm::vec3 _intersection, glm::vec3 _camPos) = 0; //function is to be overriden in the derived classes
+	glm::vec3 Shade(Light _light, glm::vec3 _intersection, glm::vec3 _normal, glm::vec3 _camPos);
 
 	//setters
 	void setColor(glm::vec3 _color);

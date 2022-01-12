@@ -141,20 +141,20 @@ void rayTracerSphereAnimation()
 
 	//creating the spheres and adding them to the vector
 
-	Sphere Sphere1(glm::vec3(0.0f, -100.0f, 0.0f), 20.0f, glm::ivec3(250, 100, 90), Rough);//position, radius, color, surface type
+	Sphere Sphere1(glm::vec3(-50.0f, -100.0f, 0.0f), 20.0f, glm::ivec3(250, 100, 90), Rough);//position, radius, color, surface type
 
 	sVec.push_back(Sphere1);
 
-	Sphere Sphere2(glm::vec3(-150.0f, 0.0f, 0.0f), 20.0f, glm::ivec3(47, 32, 66), Smooth);
+	Sphere Sphere2(glm::vec3(-200.0f, 0.0f, 0.0f), 20.0f, glm::ivec3(47, 32, 66), Smooth);
 
 	sVec.push_back(Sphere2);
 
-	//Sphere Sphere3(glm::vec3(0.0f, 0.0f, 0.0f), 60.0f, glm::ivec3(0, 0, 0), Reflective);
+	Sphere Sphere3(glm::vec3(-50.0f, 0.0f, 0.0f), 60.0f, glm::ivec3(0, 0, 0), Reflective);
 
-	//sVec.push_back(Sphere3);
+	sVec.push_back(Sphere3);
 
 	//Add a model
-	Mesh mesh(glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(100.0f, -100.0f, 100.0f), glm::ivec3(255, 255, 255), Rough, "cube.obj");
+	Mesh mesh(glm::vec3(90.0f, 0.0f, -30.0f), glm::quat(glm::vec3(0, 40, 0)), glm::vec3(50.0f, -50.0f, 50.0f), glm::ivec3(100, 255, 255), Rough, "cube.obj");
 
 	mVec.push_back(mesh);
 
@@ -166,6 +166,12 @@ void rayTracerSphereAnimation()
 	for (int i = 0; i < sVec.size(); i++)
 	{
 		sVec[i].setColor(Trace->mapColor(sVec[i].getColor(), 1));
+	}
+
+	//mapping the meshes' color to 0-1
+	for (int i = 0; i < mVec.size(); i++)
+	{
+		mVec[i].setColor(Trace->mapColor(mVec[i].getColor(), 1));
 	}
 
 	std::vector<std::thread> myThreads;

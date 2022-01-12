@@ -27,9 +27,6 @@ public:
 	glm::vec3 getCentre();
 	double getRadius();
 
-
-	virtual glm::vec3 Shade(Light _light, glm::vec3 _intersection, glm::vec3 _camPos);//shading function that is overriding the gameobject's function
-
 };
 
 

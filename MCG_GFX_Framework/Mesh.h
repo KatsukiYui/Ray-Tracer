@@ -39,9 +39,6 @@ public:
 
 	void loadOBJ(std::string _filename);//OBJ Loader
 
-	//shading function.. for now just returns the colour of the mesh..
-	glm::vec3 Shade(Light _light, glm::vec3 _intersection, glm::vec3 _camPos);
-
 	glm::vec3 multiplyByModelMatrix(glm::vec3 _point);
 };
 

@@ -15,6 +15,8 @@ struct Intersection//is returned by the tracer's intersection check function
 
 	glm::vec3 Intersection2{ 0.0f, 0.0f, 0.0f };//2nd intersection pt.. if there is any
 
+	glm::vec3 Normal{ 0.0f, 0.0f, 0.0f };//normal at intersection pt
+
 };
 
 
