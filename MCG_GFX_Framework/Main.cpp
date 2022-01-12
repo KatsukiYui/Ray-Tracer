@@ -149,12 +149,12 @@ void rayTracerSphereAnimation()
 
 	sVec.push_back(Sphere2);
 
-	Sphere Sphere3(glm::vec3(0.0f, 0.0f, 0.0f), 60.0f, glm::ivec3(0, 0, 0), Reflective);
+	//Sphere Sphere3(glm::vec3(0.0f, 0.0f, 0.0f), 60.0f, glm::ivec3(0, 0, 0), Reflective);
 
-	sVec.push_back(Sphere3);
+	//sVec.push_back(Sphere3);
 
 	//Add a model
-	Mesh mesh(glm::vec3(0.0f, -150.0f, 0.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::ivec3(255, 255, 255), Rough, "teapot3.obj");
+	Mesh mesh(glm::vec3(0.0f, 0.0f, 0.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(100.0f, -100.0f, 100.0f), glm::ivec3(255, 255, 255), Rough, "cube.obj");
 
 	mVec.push_back(mesh);
 

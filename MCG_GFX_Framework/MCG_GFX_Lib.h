@@ -6,6 +6,7 @@
 #include <glm.hpp> // This is the main GLM header
 #include <gtc/matrix_transform.hpp> // This one lets us use matrix transformations
 #include <ext.hpp>
+#include <gtx/intersect.hpp>
 
 
 /// The MCG namespace provides all the functions to draw a pixel to the screen.
