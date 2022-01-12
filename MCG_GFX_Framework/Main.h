@@ -14,6 +14,7 @@
 #include "Tracer.h"
 #include "Sphere.h"
 #include "Light.h"
+#include "Mesh.h"
 
 enum Axis {x, y, z};//for rotations
 
@@ -21,20 +22,22 @@ enum Axis {x, y, z};//for rotations
 glm::ivec2 windowSize(640, 480);
 
 std::vector<Sphere> sVec;//vector of spheres
+std::vector<Mesh> mVec;//vector of meshes
 
 Camera *Cam;//the camera, creates rays
 Tracer *Trace;//checks for intersections
 Light *L;//point light source
 
-void Animate(Sphere *_sph, Axis _axis);//moves the spheres around an axis
-void Menu();//main menu
+void animate(Sphere *_sph, Axis _axis);//moves the spheres around an axis
+void menu();//main menu
 
-void RayTracerSphereAnimation();//fixed camera, rotating spheres
-void RayTracerCameraAnimation();//fixed spheres, rotating camera
+void rayTracerSphereAnimation();//fixed camera, rotating spheres
+void rayTracerCameraAnimation();//fixed spheres, rotating camera
 void drawCircle();//draws a circle pixel by pixel using trig
 void drawSquare();//draws a square pixel by pixel using nested loops
 void drawTriangle();//draws a triangle pixel by pixel using nested loops
-void Animated2D();//draws all 3 2D shapes and animates them
+void animated2D();//draws all 3 2D shapes and animates them
+//updates the pixelColours vector within the passed range after calling the raytracing functions
 void calculateColour(glm::ivec2& _startPos, glm::ivec2& _endpos, glm::vec3& _backgroundColor, std::shared_ptr<std::vector<std::vector<glm::vec3>>> _pixelColours);
 
 

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Sphere.h"
+#include "Mesh.h"
 #include "Ray.h"
 #include "Intersection.h"
 #include "Light.h"
@@ -24,13 +25,15 @@ public:
 	  otherwise return call the object's shading function and return that color after mapping it.
 	  If there wasnt an intersection to begin with, return background color
 	*/
-	glm::vec3 rayTrace(Ray _ray, std::vector<Sphere>* _sVec, glm::vec3 _camPos, Light *_light, glm::vec3 backgroundColor);
+	glm::vec3 rayTrace(Ray _ray, std::vector<Sphere>* _sVec, std::vector<Mesh>* _mVec, glm::vec3 _camPos, Light *_light, glm::vec3 backgroundColor);
 
-	glm::vec3 antiAliasing(Ray _ray1, Ray _ray2, std::vector<Sphere>* _sVec, glm::vec3 _camPos, Light* _light, glm::vec3 backgroundColor);
+	glm::vec3 antiAliasing(Ray _ray1, Ray _ray2, std::vector<Sphere>* _sVec, std::vector<Mesh>* _mVec, glm::vec3 _camPos, Light* _light, glm::vec3 backgroundColor);
 
 	glm::vec3 closestPtOnLine(Ray _ray, glm::vec3 _pt); //returns the closest pt on a ray from _pt
 
 	Intersection sphereIntersect(Ray _ray, Sphere _sphere); //checks for intersection between ray and sphere
+
+	Intersection meshIntersect(Ray _ray, Mesh _mesh); //checks for intersection between ray and mesh triangles
 
 	glm::vec3 mapColor(glm::vec3 _col, int _map); //map the color from 0-255 to 0-1 and back
 

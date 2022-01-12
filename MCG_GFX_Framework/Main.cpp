@@ -7,14 +7,14 @@
 int main( int argc, char *argv[] )
 {
 
-	Menu(); 
+	menu(); 
 
 	return 0;
 	
 }
 
 //console menu
-void Menu()
+void menu()
 {
 	//used to exit the while loop
 	bool Exit = false;
@@ -66,40 +66,40 @@ void Menu()
 		//2 ray tracing scenes
 		if (Choice == "1")
 		{
-			std::cout << "Press escape to exit the Window";//close sdl window using Esc
-			RayTracerSphereAnimation();
+			std::cout << "Press escape to exit the Window" << std::endl;//close sdl window using Esc
+			rayTracerSphereAnimation();
 		}
 
 		if (Choice == "2")
 		{
-			std::cout << "Press escape to exit the Window";
-			RayTracerCameraAnimation();
+			std::cout << "Press escape to exit the Window" << std::endl;
+			rayTracerCameraAnimation();
 		}
 
 		//4 rasterization scenes
 
 		if (Choice == "3")
 		{
-			std::cout << "Press escape to exit the Window";
+			std::cout << "Press escape to exit the Window" << std::endl;
 			drawCircle();
 		}
 
 		if (Choice == "4")
 		{
-			std::cout << "Press escape to exit the Window";
+			std::cout << "Press escape to exit the Window" << std::endl;
 			drawSquare();
 		}
 
 		if (Choice == "5")
 		{
-			std::cout << "Press escape to exit the Window";
+			std::cout << "Press escape to exit the Window" << std::endl;
 			drawTriangle();
 		}
 
 		if (Choice == "6")
 		{
-			std::cout << "Press escape to exit the Window";
-			Animated2D();//draws the 3 2D shapes and animates them
+			std::cout << "Press escape to exit the Window" << std::endl;
+			animated2D();//draws the 3 2D shapes and animates them
 		}
 
 		Choice = "";//reset choice
@@ -109,20 +109,21 @@ void Menu()
 	}
 };
 
+//updates the pixelColours vector within the passed range after calling the raytracing functions
 void calculateColour(glm::ivec2 &_startPos, glm::ivec2 &_endpos, glm::vec3 &_backgroundColor, std::shared_ptr<std::vector<std::vector<glm::vec3>>>_pixelColours)
 {
 	for (int j = _startPos.y; j < _endpos.y; j++)
 	{
 		for (int i = _startPos.x; i < _endpos.x; i++)
 		{
-			glm::vec3 colour = Trace->antiAliasing(Cam->createRay(glm::vec2(i, j), windowSize), Cam->createRay(glm::vec2(i + 0.5f, j + 0.5f), windowSize), &sVec, Cam->getPosition(), L, _backgroundColor);
+			glm::vec3 colour = Trace->antiAliasing(Cam->createRay(glm::vec2(i, j), windowSize), Cam->createRay(glm::vec2(i + 0.5f, j + 0.5f), windowSize), &sVec, &mVec, Cam->getPosition(), L, _backgroundColor);
 			_pixelColours->at(i)[j] = colour;
 		}
 	}
 };
 
 //ray tracer with sphere rotations and fixed camera
-void RayTracerSphereAnimation()
+void rayTracerSphereAnimation()
 {
 	Cam = new Camera(glm::vec3(0, 0, -400), glm::vec3(0, 0, 1));//camera position and dir to look at
 
@@ -151,6 +152,11 @@ void RayTracerSphereAnimation()
 	Sphere Sphere3(glm::vec3(0.0f, 0.0f, 0.0f), 60.0f, glm::ivec3(0, 0, 0), Reflective);
 
 	sVec.push_back(Sphere3);
+
+	//Add a model
+	Mesh mesh(glm::vec3(0.0f, -150.0f, 0.0f), glm::quat(1.0f, 0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::ivec3(255, 255, 255), Rough, "teapot3.obj");
+
+	mVec.push_back(mesh);
 
 	//set the backgroundColor
 	glm::vec3 backgroundColor(72, 61, 139);
@@ -182,9 +188,9 @@ void RayTracerSphereAnimation()
 	while (MCG::ProcessFrame())//draw frame, return false if Esc was pressed
 	{
 		//rotate the spheres
-		Animate(&(sVec[1]), y);//rotate the sphere around the y axis
+		animate(&(sVec[1]), y);//rotate the sphere around the y axis
 
-		Animate(&(sVec[0]), x);//rotate the sphere around the x axis
+		animate(&(sVec[0]), x);//rotate the sphere around the x axis
 
 		MCG::getWindowSize(&windowSize);//used to enable changing the window size
 
@@ -199,6 +205,7 @@ void RayTracerSphereAnimation()
 			//calculate the last pixel the thread will work on based on the raysPerThread value
 			endPosition = glm::ivec2(windowSize.x, endPosition.y + (raysPerThread / windowSize.x));
 			myThreads.push_back(std::thread(calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
+			/// switch to sequential instead of multithreading
 			//calculateColour(startPosition, endPosition, backgroundColor, pixelColours);
 			startPosition = glm::ivec2(0, endPosition.y);
 		}
@@ -207,6 +214,7 @@ void RayTracerSphereAnimation()
 		endPosition = windowSize;
 		myThreads.push_back(std::thread(calculateColour, startPosition, endPosition, backgroundColor, pixelColours));
 
+		//wait for all threads to return
 		for (std::thread& thread : myThreads)
 		{
 			if (thread.joinable())
@@ -215,7 +223,7 @@ void RayTracerSphereAnimation()
 			}
 		}
 
-
+		//draw the pixel vector onto the window
 		for (int j = 0; j < windowSize.y; j++)
 		{
 
@@ -238,7 +246,7 @@ void RayTracerSphereAnimation()
 }
 
 //ray tracer with camera rotations and fixed spheres
-void RayTracerCameraAnimation()
+void rayTracerCameraAnimation()
 {
 	Cam = new Camera(glm::vec3(0, 0, -300), glm::vec3(0, 0, 1));//camera position and dir to look at
 
@@ -290,9 +298,9 @@ void RayTracerCameraAnimation()
 	while (MCG::ProcessFrame())
 	{
 		//rotate the spheres
-		//Animate(&(sVec[1]), y);//rotate the sphere around the y axis
+		animate(&(sVec[1]), y);//rotate the sphere around the y axis
 
-	    //Animate(&(sVec[0]), x);//rotate the sphere around the x axis
+	    animate(&(sVec[0]), x);//rotate the sphere around the x axis
 
 
 		if (Angle >= 2 * glm::pi<double>())//if the circle is completed..
@@ -320,7 +328,7 @@ void RayTracerCameraAnimation()
 
 			for (int i = 0; i < windowSize.x; i++)
 			{
-				MCG::DrawPixel(glm::ivec2(i, j), Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, Cam->getPosition(), L, backgroundColor));
+				MCG::DrawPixel(glm::ivec2(i, j), Trace->rayTrace(Cam->createRay(glm::ivec2(i, j), windowSize), &sVec, &mVec, Cam->getPosition(), L, backgroundColor));
 				//create a ray using the camera ptr and pass that ray to the tracer for intersection checks with the spheres vector.
 				//The tracer then returns the color of that pixel.
 			}
@@ -337,7 +345,7 @@ void RayTracerCameraAnimation()
 };
 
 //used to animate the spheres
-void Animate(Sphere *_sph, Axis _axis)
+void animate(Sphere *_sph, Axis _axis)
 {
 	glm::vec3 newCentre = _sph->getCentre();
 
@@ -491,7 +499,7 @@ void drawTriangle()//draw triangle
 }
 
 //draw the 3 2D shapes and animate them
-void Animated2D()
+void animated2D()
 {
 	//used for drawing the circle
 	float R = 50;//radius

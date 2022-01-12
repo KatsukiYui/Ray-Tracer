@@ -1,10 +1,59 @@
 #include "Mesh.h"
 
 
-void Mesh::LoadOBJ(std::string filename)
+Mesh::Mesh(glm::vec3 _position, glm::quat _rotation, glm::vec3 _scale, glm::vec3 _color, surfaceType _sType, std::string _filename)
+{
+	Position = _position;
+	Rotation = _rotation;
+	Scale = _scale;
+	Color = _color;
+	surfType = _sType;
+
+	loadOBJ(_filename);
+}
+
+void Mesh::setPosition(glm::vec3 _position)
+{
+	Position = _position;
+}
+
+void Mesh::setRotation(glm::quat _rotation)
+{
+	Rotation = _rotation;
+}
+
+void Mesh::setScale(glm::vec3 _scale)
+{
+	Scale = _scale;
+}
+
+Triangle Mesh::getTriangle(int _index)
+{
+	if (Triangles.size() > _index)
+	{
+		return Triangles[_index];
+	}
+}
+
+glm::vec3 Mesh::getPosition()
+{
+	return Position;
+}
+
+glm::quat Mesh::getRotation()
+{
+	return Rotation;
+}
+
+glm::vec3 Mesh::getScale()
+{
+	return Scale;
+}
+
+void Mesh::loadOBJ(std::string _filename)
 {
 	// Find file
-	std::ifstream inputFile(filename);
+	std::ifstream inputFile(_filename);
 
 	if (inputFile.is_open())
 	{
@@ -104,22 +153,54 @@ void Mesh::LoadOBJ(std::string filename)
 			}
 		}
 
-		// For ordered list position / 3; i+=3
-		//{
-		//		create triangle, and populate it with positions i, i+1, i+2
-		//		create triangle, and populate it with nomrals i, i+1, i+2
-		//		add triangle to mesh list of triagles
-		//}
+		//convert data into triangles and adding them to the vector
 
+		glm::vec3 positions[3];
+		glm::vec3 normals[3];
 
+		for (int i = 0; i < orderedPositionData.size() / 3; i += 3)
+		{
+			positions[0] = orderedPositionData[i];
+			positions[1] = orderedPositionData[i + 1];
+			positions[2] = orderedPositionData[i + 2];
 
+			normals[0] = orderedNormalData[i];
+			normals[1] = orderedNormalData[i + 1];
+			normals[2] = orderedNormalData[i + 2];
 
-
+			Triangle temp(positions, normals);
+			Triangles.push_back(temp);
+		}
 
 		inputFile.close();
 	}
 	else
 	{
-		std::cerr << "WARNING: File not found: " << filename << std::endl;
+		std::cerr << "WARNING: File not found: " << _filename << std::endl;
 	}
 }
+
+//shading function.. for now just returns the colour of the mesh..
+glm::vec3 Mesh::Shade(Light _light, glm::vec3 _intersection, glm::vec3 _camPos)
+{
+	return this->Color;
+}
+
+int Mesh::getTrianglesSize()
+{
+	return Triangles.size();
+}
+
+glm::vec3 Mesh::multiplyByModelMatrix(glm::vec3 _point)
+{
+	glm::mat4 translationMatrix = glm::translate(glm::identity<glm::mat4>(), Position);
+	glm::mat4 rotationMatrix = glm::mat4_cast(Rotation);
+	glm::mat4 scaleMatrix = glm::scale(glm::identity<glm::mat4>(), Scale);
+
+	glm::mat4 modelMatrix = translationMatrix * rotationMatrix * scaleMatrix;
+
+	glm::vec4 point(_point, 1); // adding a w to multiple by the model matrix
+	point = modelMatrix * point;
+
+	return glm::vec3(point.x, point.y, point.z);
+};

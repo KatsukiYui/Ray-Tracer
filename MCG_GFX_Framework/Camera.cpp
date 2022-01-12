@@ -112,7 +112,4 @@ void Camera::setLookAtDir(glm::vec3 _dir)
 //getters
 glm::vec3 Camera::getPosition() { return camPosition; }
 glm::vec3 Camera::getLookAtPos() { return lookAtPos; }
-glm::vec3 Camera::getLookAtDir()
-{
-	return lookAtDir;
-}
+glm::vec3 Camera::getLookAtDir(){ return lookAtDir; }

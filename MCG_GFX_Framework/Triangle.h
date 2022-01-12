@@ -7,18 +7,21 @@ class Triangle
 {
 
 protected:
-
+	//sticking to old coding standard in sphere.h
+	glm::vec3 Positions[3];
+	glm::vec3 Normals[3];
 
 public:
 
-	Triangle();//constructor
+	Triangle(glm::vec3 _positions[3], glm::vec3 _normals[3]);//constructor
 
 	//setters
+	void setPositions(glm::vec3 _positions[3]);
+	void seNormals(glm::vec3 _normals[3]);
 
 	//getters
-
-
-	virtual glm::vec3 Shade(Light _light, glm::vec3 _intersection, glm::vec3 _camPos);//shading function that is overriding the gameobject's function
+	glm::vec3* getPositions();
+	glm::vec3* getNormals();
 
 };
 

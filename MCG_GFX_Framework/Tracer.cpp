@@ -7,7 +7,7 @@
   otherwise return call the object's shading function and return that color after mapping it.
   If there wasnt an intersection to begin with, return background color
 */
-glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPos, Light *_light, glm::vec3 backgroundColor)
+glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, std::vector<Mesh>* _mVec, glm::vec3 _camPos, Light *_light, glm::vec3 backgroundColor)
 {
 
 	Intersection sIntersect; //used for intersection checks between the spheres and a ray
@@ -23,7 +23,6 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPo
 	bool shadowHit = false;//shadow ray intersection
 
 	bool reflectionHit = false;//reflection ray intersection for reflective objects
-
 
 	for (int v = 0; v < _sVec->size(); v++)
 	{
@@ -145,11 +144,12 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, glm::vec3 _camPo
 
 	}
 
-}
-glm::vec3 Tracer::antiAliasing(Ray _ray1, Ray _ray2, std::vector<Sphere>* _sVec, glm::vec3 _camPos, Light* _light, glm::vec3 backgroundColor)
+};
+
+glm::vec3 Tracer::antiAliasing(Ray _ray1, Ray _ray2, std::vector<Sphere>* _sVec, std::vector<Mesh>* _mVec, glm::vec3 _camPos, Light* _light, glm::vec3 backgroundColor)
 {
-	glm::vec3 firstColour = rayTrace(_ray1, _sVec, _camPos, _light, backgroundColor);
-	glm::vec3 secondColour = rayTrace(_ray2, _sVec, _camPos, _light, backgroundColor);
+	glm::vec3 firstColour = rayTrace(_ray1, _sVec, _mVec, _camPos, _light, backgroundColor);
+	glm::vec3 secondColour = rayTrace(_ray2, _sVec, _mVec, _camPos, _light, backgroundColor);
 
 	return (firstColour + secondColour) * 0.5f;
 };
@@ -168,7 +168,6 @@ glm::vec3 Tracer::closestPtOnLine(Ray _ray, glm::vec3 _pt)
 Intersection Tracer::sphereIntersect(Ray _ray, Sphere _sphere)
 {
 	Intersection sphInt; //structure to be returned
-
 	sphInt.Hit = false; //no intersection by default
 
 	if (glm::length(_sphere.getCentre() - _ray.getOrg()) < _sphere.getRadius())
@@ -187,7 +186,7 @@ Intersection Tracer::sphereIntersect(Ray _ray, Sphere _sphere)
 		if (lenOrgtoX >= 0)
 		{
 			/*is the closest point behind or infront of the ray origin:
-			we use dot product to get that length (P - a).n 
+			we use dot product to get that length (P - a).n
 			where p is the centre of the sphere, a is origin of the ray and n is the direction of the ray (unit vector).
 			If the length from the origin of the ray to X (the closest point) is -ve that means X is behind
 			the ray origin
@@ -198,7 +197,7 @@ Intersection Tracer::sphereIntersect(Ray _ray, Sphere _sphere)
 			//where X is the closest point on the ray to the centre of the circle P 
 			//rule is vector from X to P = P - X -> P - a - ((p - a).n)*n
 			//centre of circle is P .. X is calculated from that and the ray 
-			
+
 			double Distance = glm::length(XtoP); //distance between X and P 
 
 			if (Distance == _sphere.getRadius())
@@ -213,7 +212,7 @@ Intersection Tracer::sphereIntersect(Ray _ray, Sphere _sphere)
 
 				sphInt.Intersection2 = X; //Z here is equal to 0 since the radius is equal to the shortest distance
 
-				sphInt.Distance = glm::length(sphInt.Intersection1 - _ray.getOrg()); 
+				sphInt.Distance = glm::length(sphInt.Intersection1 - _ray.getOrg());
 				//distance from ray origin to the intersection pt
 
 			}
@@ -254,6 +253,85 @@ Intersection Tracer::sphereIntersect(Ray _ray, Sphere _sphere)
 	}
 
 	return sphInt; //return the structure
+}
+
+//checks for intersection between ray and mesh triangles
+Intersection Tracer::meshIntersect(Ray _ray, Mesh _mesh)
+{
+	Intersection triangleInt; //structure to be returned
+	triangleInt.Hit = false; //no intersection by default
+	
+	glm::vec3 rayOrg = _ray.getOrg();
+	glm::vec3 rayDir = _ray.getDir();
+
+	//Do the intersection checks for every triangle in the mesh
+	for (int t = 0; t < _mesh.getTrianglesSize(); t++)
+	{
+		/// Find the point in which the ray intersects with the plane on which the triangle lies
+		// compute plane's normal using the vertices of the triangle
+		glm::vec3 v0 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getPositions()[0]);
+		glm::vec3 v1 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getPositions()[1]);
+		glm::vec3 v2 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getPositions()[2]);
+		glm::vec3 normal = glm::cross((v1 - v0), (v2 - v0));
+		normal = glm::normalize(normal);
+
+		float normalDotDir = glm::dot(normal, rayDir);
+		// check if the ray and the plane are parallel
+		if (normalDotDir == 0)
+		{
+			triangleInt.Hit = false;
+			//they're parallel so no intersection
+		}
+
+		else
+		{
+			//calculate the distance from the origin to the plane
+			//the dot product of the normal and any point on the triangle
+			float distance = glm::dot(normal, v0);
+
+			//calculate the distance from ray origin to the intersection point with the plane
+			float rayOriginToPlaneDistance = (glm::dot(normal, rayOrg + distance)) / glm::dot(normal, rayDir);
+			//check if the triangle is behind the ray
+			if (rayOriginToPlaneDistance < 0)
+			{
+				triangleInt.Hit = false;
+				//the triangle/plane is behind the ray
+			}
+
+			else
+			{
+				//calculate the intersection point of the ray with the plane
+				glm::vec3 planeIntersection = rayOrg + rayOriginToPlaneDistance * rayDir;
+
+				//Check if the intersection point is inside or outside the triangle.
+				//find a vector perpendicular to triangle's plane at each edge
+
+				glm::vec3 edge0 = v1 - v0;
+				glm::vec3 edge1 = v2 - v1;
+				glm::vec3 edge2 = v0 - v2;
+				glm::vec3 perpendicularToEdge0 = glm::cross(edge0, (planeIntersection - v0));
+				glm::vec3 perpendicularToEdge1 = glm::cross(edge1, (planeIntersection - v1));
+				glm::vec3 perpendicularToEdge2 = glm::cross(edge2, (planeIntersection - v2));
+
+				if (glm::dot(normal, perpendicularToEdge0) > 0 && glm::dot(normal, perpendicularToEdge1) && glm::dot(normal, perpendicularToEdge2))
+				{
+					//the intersection point p is inside the triangle
+					triangleInt.Hit = true;
+					triangleInt.Intersection1 = planeIntersection;
+					triangleInt.Distance = rayOriginToPlaneDistance;
+				}
+				else
+				{
+					triangleInt.Hit = false;
+				}
+
+			}
+
+		}
+
+	}
+
+	return triangleInt;
 };
 
 //map the color from 0-255 to 0-1 and back.. to be used for the shading function
