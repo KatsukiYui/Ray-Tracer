@@ -1,5 +1,4 @@
 #include "Main.h"
-#include <thread>
 
 #define THREAD_COUNT 24
 
@@ -116,6 +115,7 @@ void calculateColour(glm::ivec2 &_startPos, glm::ivec2 &_endpos, glm::vec3 &_bac
 	{
 		for (int i = _startPos.x; i < _endpos.x; i++)
 		{
+			//creating and passing 2 rays for each pixel for anti aliasing
 			glm::vec3 colour = Trace->antiAliasing(Cam->createRay(glm::vec2(i, j), windowSize), Cam->createRay(glm::vec2(i + 0.5f, j + 0.5f), windowSize), &sVec, &mVec, Cam->getPosition(), L, _backgroundColor);
 			_pixelColours->at(i)[j] = colour;
 		}
@@ -190,9 +190,12 @@ void rayTracerSphereAnimation()
 		pixelColours->push_back(temp);
 	}
 
-
+	std::chrono::high_resolution_clock::time_point start;
+	std::chrono::high_resolution_clock::time_point end;
 	while (MCG::ProcessFrame())//draw frame, return false if Esc was pressed
 	{
+		start = std::chrono::high_resolution_clock::now();
+
 		//rotate the spheres
 		animate(&(sVec[1]), y);//rotate the sphere around the y axis
 
@@ -238,6 +241,11 @@ void rayTracerSphereAnimation()
 				MCG::DrawPixel(glm::ivec2(i, j), pixelColours->at(i)[j]);
 			}
 		}
+
+		end = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<float> duration = end - start;
+
+		//std::cout << duration.count() << std::endl;
 	}
 
 	//deleting pointers, freeing memory

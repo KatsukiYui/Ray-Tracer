@@ -8,6 +8,8 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <thread>
+#include <chrono>
 
 #include "Camera.h"
 #include "Ray.h"
@@ -15,6 +17,7 @@
 #include "Sphere.h"
 #include "Light.h"
 #include "Mesh.h"
+
 
 enum Axis {x, y, z};//for rotations
 

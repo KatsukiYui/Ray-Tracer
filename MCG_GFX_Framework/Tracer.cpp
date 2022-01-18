@@ -185,6 +185,7 @@ glm::vec3 Tracer::rayTrace(Ray _ray, std::vector<Sphere>*_sVec, std::vector<Mesh
 
 };
 
+//Calls the rayTrace function twice and takes the average colour result.
 glm::vec3 Tracer::antiAliasing(Ray _ray1, Ray _ray2, std::vector<Sphere>* _sVec, std::vector<Mesh>* _mVec, glm::vec3 _camPos, Light* _light, glm::vec3 backgroundColor)
 {
 	glm::vec3 firstColour = rayTrace(_ray1, _sVec, _mVec, _camPos, _light, backgroundColor);
@@ -321,8 +322,7 @@ Intersection Tracer::meshIntersect(Ray _ray, Mesh _mesh)
 		glm::vec3 n1 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getNormals()[1]);
 		glm::vec3 n2 = _mesh.multiplyByModelMatrix(_mesh.getTriangle(t).getNormals()[2]);
 
-		glm::vec3 normal = (n0 + n1 + n2) / 3.0f;
-		
+		glm::vec3 normal = (n0 + n1 + n2) / 3.0f;	
 		//glm::vec3 normal = glm::cross((v1 - v0), (v2 - v0));
 		normal = glm::normalize(normal);
 
@@ -342,9 +342,7 @@ Intersection Tracer::meshIntersect(Ray _ray, Mesh _mesh)
 
 		/*
 		
-
-
-
+		/// My own implementation of the ray triangle intersection function. 
 
 		float normalDotDir = glm::dot(normal, rayDir);
 		// check if the ray and the plane are parallel
@@ -382,11 +380,7 @@ Intersection Tracer::meshIntersect(Ray _ray, Mesh _mesh)
 				glm::vec3 perpendicularToEdge1 = glm::cross(edge1, (planeIntersection - v1));
 				glm::vec3 perpendicularToEdge2 = glm::cross(edge2, (planeIntersection - v2));
 
-				if (glm::dot(normal, perpendicularToEdge0) < 0 || glm::dot(normal, perpendicularToEdge1) < 0 || glm::dot(normal, perpendicularToEdge2) < 0)
-				{
-					triangleInt.Hit = false;
-				}
-				else
+				if (glm::dot(normal, perpendicularToEdge0) > 0 && glm::dot(normal, perpendicularToEdge1) > 0 && glm::dot(normal, perpendicularToEdge2) > 0)
 				{
 					//the intersection point p is inside the triangle
 					if (rayOriginToPlaneDistance < shortestDistance)
@@ -396,12 +390,13 @@ Intersection Tracer::meshIntersect(Ray _ray, Mesh _mesh)
 						triangleInt.Hit = true;
 					}
 				}
-
+				else
+				{
+					triangleInt.Hit = false;
+				}
 			}
-
 		}
 			*/
-
 	}
 
 

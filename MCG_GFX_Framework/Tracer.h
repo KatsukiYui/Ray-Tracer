@@ -27,6 +27,7 @@ public:
 	*/
 	glm::vec3 rayTrace(Ray _ray, std::vector<Sphere>* _sVec, std::vector<Mesh>* _mVec, glm::vec3 _camPos, Light *_light, glm::vec3 backgroundColor);
 
+	//Calls the rayTrace function twice and takes the average colour result.
 	glm::vec3 antiAliasing(Ray _ray1, Ray _ray2, std::vector<Sphere>* _sVec, std::vector<Mesh>* _mVec, glm::vec3 _camPos, Light* _light, glm::vec3 backgroundColor);
 
 	glm::vec3 closestPtOnLine(Ray _ray, glm::vec3 _pt); //returns the closest pt on a ray from _pt
